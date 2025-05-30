@@ -238,6 +238,11 @@ class KeymapData(BaseModel):
             new_layers[name] = layer
         self.layers = new_layers
 
+        # If self.combos is empty, use base.combos directly
+        if not self.combos and base.combos:
+            self.combos = [combo.model_copy(deep=True) for combo in base.combos]
+            return
+
         base_combos_map = defaultdict(list)  # for faster lookup by key_positions
         for combo in base.combos:
             base_combos_map[tuple(sorted(combo.key_positions))].append(combo)
